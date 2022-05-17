@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shopping_list_sample/controllers/auth_controller.dart';
 
 import 'firebase_options.dart';
 
@@ -8,7 +10,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -17,16 +19,28 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: MyWidget(),
+      home: MyScreen(),
     );
   }
 }
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({Key? key}) : super(key: key);
+class MyScreen extends HookConsumerWidget {
+  const MyScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Container();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authController = ref.watch(authControllerProvider);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Shopping List'),
+        leading: authController != null
+            ? IconButton(
+                onPressed: () =>
+                    ref.read(authControllerProvider.notifier).signOut(),
+                icon: const Icon(Icons.logout),
+              )
+            : null,
+      ),
+    );
   }
 }
