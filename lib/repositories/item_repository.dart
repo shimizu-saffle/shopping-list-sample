@@ -13,12 +13,13 @@ abstract class BaseItemRepository {
   Future<void> deleteItem({required String userId, required String itemId});
 }
 
+final itemRepositoryProvider =
+    Provider<ItemRepository>((ref) => ItemRepository(ref.read));
+
 class ItemRepository implements BaseItemRepository {
   ItemRepository(this._read);
 
   final Reader _read;
-
-  // TODO(shimizu-saffle): itemConverterを定義する
 
   @override
   Future<String> createItem({
@@ -57,8 +58,7 @@ class ItemRepository implements BaseItemRepository {
           await _read(firebaseFirestoreProvider).usersListRef(userId).get();
       return snap.docs
           .map(
-            (doc) => Item.fromDocument(
-                doc as QueryDocumentSnapshot<Map<String, dynamic>>),
+            (doc) => Item.fromDocument(doc),
           )
           .toList();
     } on FirebaseException catch (e) {
