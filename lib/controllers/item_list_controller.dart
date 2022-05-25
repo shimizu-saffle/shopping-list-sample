@@ -33,8 +33,14 @@ class ItemListController extends StateNotifier<AsyncValue<List<Item>>> {
         userId: _userId!,
         item: item,
       );
-      state.whenData((items) =>
-          state = AsyncValue.data(items..add(item.copyWith(id: itemId))));
+      state.whenData(
+        (items) => state = AsyncValue.data(
+          items
+            ..add(
+              item.copyWith(id: itemId),
+            ),
+        ),
+      );
     } on CustomException catch (e) {
       _read(itemListExceptionProvider.notifier).state = e;
     }
@@ -51,6 +57,21 @@ class ItemListController extends StateNotifier<AsyncValue<List<Item>>> {
           items..removeWhere((item) => item.id == itemId),
         ),
       );
+    } on CustomException catch (e) {
+      _read(itemListExceptionProvider.notifier).state = e;
+    }
+  }
+
+  Future<void> updateItem({required Item updatedItem}) async {
+    try {
+      await _read(itemRepositoryProvider)
+          .updateItem(userId: _userId!, item: updatedItem);
+      state.whenData((items) {
+        state = AsyncValue.data([
+          for (final item in items)
+            if (item.id == updatedItem.id) updatedItem else item
+        ]);
+      });
     } on CustomException catch (e) {
       _read(itemListExceptionProvider.notifier).state = e;
     }
