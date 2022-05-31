@@ -18,6 +18,7 @@ dependencies:
   cloud_firestore: ^3.1.15
   hooks_riverpod: ^1.0.4
   freezed_annotation: ^2.0.3
+  flutter_hooks: ^0.18.4
 
 dev_dependencies:
   flutter_test:
