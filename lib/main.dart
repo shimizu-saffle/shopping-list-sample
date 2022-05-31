@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shopping_list_sample/controllers/auth_controller.dart';
 import 'package:shopping_list_sample/models/item_model.dart';
 import 'package:shopping_list_sample/widgets/add_item_dialog.dart';
+import 'package:shopping_list_sample/widgets/item_list.dart';
 
 import 'firebase_options.dart';
 
@@ -43,6 +44,7 @@ class MyScreen extends HookConsumerWidget {
               )
             : null,
       ),
+      body: const ItemList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => AddItemDialog.show(context, Item.empty()),
         child: const Icon(Icons.add),
